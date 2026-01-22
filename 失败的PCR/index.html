@@ -67,7 +67,7 @@
 </div>
 <div class="widgets">
 
-<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">细胞实验</span></div><div class="widget-body fs14"><a class="link" href="/wiki/guideline/%E7%BB%86%E8%83%9E%E5%A4%8D%E8%8B%8F#start"><span class="toc-text">细胞复苏</span></a><a class="link" href="/wiki/guideline/%E7%BB%86%E8%83%9E%E4%BC%A0%E4%BB%A3"><span class="toc-text">细胞传代</span></a><a class="link" href="/wiki/guideline/%E7%BB%86%E8%83%9E%E5%86%BB%E5%AD%98"><span class="toc-text">细胞冻存</span></a><a class="link" href="/wiki/guideline/%E7%BB%86%E8%83%9E%E5%9F%B9%E5%85%BB%E5%9F%BA%E7%A1%80"><span class="toc-text">细胞培养基础</span></a></div><div class="widget-header dis-select"><span class="name">分子实验</span></div><div class="widget-body fs14"><a class="link" href="/wiki/guideline/%E7%90%BC%E8%84%82%E7%B3%96%E5%87%9D%E8%83%B6%E7%94%B5%E6%B3%B3"><span class="toc-text">琼脂糖凝胶电泳</span></a><a class="link" href="/wiki/guideline/%E5%A4%B1%E8%B4%A5%E7%9A%84PCR"><span class="toc-text">失败的PCR</span></a></div><div class="widget-header dis-select"><span class="name">动物实验</span></div><div class="widget-body fs14"><a class="link" href="/wiki/guideline/%E5%B0%8F%E9%BC%A0%E9%A2%85%E5%86%85%E6%88%90%E7%98%A4"><span class="toc-text">小鼠颅内成瘤</span></a><a class="link" href="/wiki/guideline/%E5%B0%8F%E9%BC%A0%E9%87%87%E8%A1%80"><span class="toc-text">小鼠采血</span></a></div></widget>
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">细胞实验</span></div><div class="widget-body fs14"><a class="link" href="/wiki/guideline/%E7%BB%86%E8%83%9E%E5%A4%8D%E8%8B%8F#start"><span class="toc-text">细胞复苏</span></a><a class="link" href="/wiki/guideline/%E7%BB%86%E8%83%9E%E4%BC%A0%E4%BB%A3"><span class="toc-text">细胞传代</span></a><a class="link" href="/wiki/guideline/%E7%BB%86%E8%83%9E%E5%86%BB%E5%AD%98"><span class="toc-text">细胞冻存</span></a><a class="link" href="/wiki/guideline/%E7%BB%86%E8%83%9E%E5%9F%B9%E5%85%BB%E5%9F%BA%E7%A1%80"><span class="toc-text">细胞培养基础</span></a></div><div class="widget-header dis-select"><span class="name">分子实验</span></div><div class="widget-body fs14"><a class="link" href="/wiki/guideline/%E7%90%BC%E8%84%82%E7%B3%96%E5%87%9D%E8%83%B6%E7%94%B5%E6%B3%B3"><span class="toc-text">琼脂糖凝胶电泳</span></a><a class="link" href="/wiki/guideline/%E5%A4%B1%E8%B4%A5%E7%9A%84PCR"><span class="toc-text">失败的PCR</span></a></div><div class="widget-header dis-select"><span class="name">动物实验</span></div><div class="widget-body fs14"><a class="link" href="/wiki/guideline/%E5%B0%8F%E9%BC%A0%E9%A2%85%E5%86%85%E6%88%90%E7%98%A4"><span class="toc-text">小鼠颅内成瘤</span></a><a class="link" href="/wiki/guideline/%E5%B0%8F%E9%BC%A0%E9%87%87%E8%A1%80"><span class="toc-text">小鼠采血</span></a><a class="link" href="/wiki/guideline/%E5%B0%8F%E5%8A%A8%E7%89%A9%E8%8D%A7%E5%85%89"><span class="toc-text">小动物荧光</span></a></div></widget>
 
 
 
@@ -222,7 +222,7 @@ show_runtime();
     ctx.search = {};
     ctx.search.service = `local_search`;
     if (ctx.search.service == 'local_search') {
-      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"codeblock":true,"algolia_search":null,"appId":null,"apiKey":null,"indexName":null,"sort":"-date"}`);
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"codeblock":true,"skip_serch":[],"sort":"-date"}`);
       ctx.search[ctx.search.service] = service_obj;
     }
   }
