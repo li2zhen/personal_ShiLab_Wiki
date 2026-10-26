@@ -1,0 +1,671 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.3.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>tfus-tinnitus：rs-fMRI预处理流程 - ShiLab_Wiki</title>
+
+  
+    <meta name="description" content="静息态功能磁共振的采集规范与预处理流水线">
+<meta property="og:type" content="website">
+<meta property="og:title" content="rs-fMRI预处理流程">
+<meta property="og:url" content="https://lab.qiulab.work/wiki/tfus-tinnitus/rs-fMRI%E9%A2%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B">
+<meta property="og:site_name" content="ShiLab_Wiki">
+<meta property="og:description" content="静息态功能磁共振的采集规范与预处理流水线">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-10-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-26T01:29:18.551Z">
+<meta property="article:author" content="li2zhen">
+<meta property="article:tag" content="fMRI">
+<meta property="article:tag" content="预处理">
+<meta property="article:tag" content="BIDS">
+<meta property="article:tag" content="去噪">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  <meta name="keywords" content=",,,">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+    <link rel="shortcut icon" href="/avatar/avatar.png">
+  
+
+  
+
+  
+</head>
+<body>
+
+
+
+<div class="l_body s:aa content tech" id="start" layout="page" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/wiki/tfus-tinnitus.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/wiki/tfus-tinnitus/C57BL6J%E5%B0%8F%E9%BC%A0%E8%80%B3%E9%B8%A3%E9%80%A0%E6%A8%A1Protocol"><div class="main" ff="title">tfus-tinnitus</div><div class="sub normal cap">实验方法与技术</div><div class="sub hover cap" style="opacity:0"> protocol 合集</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/tfus-tinnitus/" placeholder="在 超声治疗耳鸣的机制 中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item" title="文档" href="/" style="color:#1BCDFC"><svg t="1730798771584" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14012" width="200" height="200"><path d="M601.9072 175.616H103.5264l216.701156 704.625778h498.369422z" fill="#E6E6E6" p-id="14013"></path><path d="M806.525156 471.677156c-59.312356 59.437511-121.969778 103.3216-173.431467 124.905244l-38.638933-38.729956-57.4464-57.5488c21.538133-51.552711 65.342578-114.346667 124.654933-173.7728 88.484978-88.644267 184.467911-142.779733 239.468089-139.696355 13.368889 0.728178 24.348444 4.858311 32.164978 12.686222 39.981511 40.083911-16.770844 161.939911-126.7712 272.156445z" fill="#DD852C" p-id="14014"></path><path d="M901.108622 186.823111s-290.247111 190.748444-306.665244 371.017956l-57.4464-57.5488c21.538133-51.552711 65.342578-114.335289 124.654933-173.761423 88.496356-88.644267 184.456533-142.791111 239.456711-139.707733z" fill="#BF6D22" p-id="14015"></path><path d="M633.093689 596.5824l-39.515022 15.303111a86.448356 86.448356 0 0 0-45.841067 41.392356l-17.009778 33.336889-91.932444 8.374044 8.351289-92.114489 33.268622-17.043911a86.493867 86.493867 0 0 0 41.312711-45.932089l15.268978-39.594667" fill="#FFFFFF" p-id="14016"></path><path d="M943.729778 189.053156c-24.064-24.109511-68.9152-22.619022-126.270578 4.187022-2.264178 1.058133-4.551111 2.207289-6.849422 3.333689l-48.310045-12.811378c-42.871467-11.377778-88.246044 9.284267-107.884089 49.140622l-13.129955 26.658133a132.346311 132.346311 0 0 1-102.536533 73.079467 14.791111 14.791111 0 0 0-12.822756 16.520533 14.768356 14.768356 0 0 0 16.4864 12.856889 161.826133 161.826133 0 0 0 125.360356-89.349689l13.129955-26.658133a64.216178 64.216178 0 0 1 73.841778-33.632711l18.682311 4.960711c-40.413867 25.053867-82.545778 58.971022-122.220089 98.724978-58.220089 58.333867-104.812089 123.403378-127.829333 178.517333l-0.056889 0.147911-0.1024 0.238934-15.268978 39.594666a71.714133 71.714133 0 0 1-34.258489 38.0928l-33.268622 17.043911a14.791111 14.791111 0 0 0-7.9872 11.832889l-8.362667 92.125867a14.825244 14.825244 0 0 0 16.054045 16.0768l91.943822-8.374044c5.040356-0.455111 9.511822-3.4816 11.821511-8.009956l16.9984-33.336889a71.68 71.68 0 0 1 38.013156-34.326755l39.5264-15.303112 0.193422-0.091022 0.193422-0.068266c55.022933-23.062756 119.955911-69.757156 178.176-128.079645a793.656889 793.656889 0 0 0 39.424-42.496 14.836622 14.836622 0 0 0-1.558755-20.878222 14.756978 14.756978 0 0 0-20.844089 1.558755 751.377067 751.377067 0 0 1-37.922134 40.891734c-52.383289 52.497067-110.011733 94.9248-159.675733 117.748622l-81.806222-81.976889c22.778311-49.755022 65.1264-107.485867 117.521066-159.982933 44.999111-45.078756 93.001956-82.215822 137.375289-106.484622l92.888178 93.070222c-9.773511 17.897244-21.822578 36.693333-35.919644 55.944533-4.824178 6.599111-3.413333 15.860622 3.1744 20.696178 6.576356 4.835556 15.826489 3.413333 20.650666-3.185778 31.106844-42.518756 53.111467-83.524267 63.624534-118.601955 15.064178-50.346667 2.7648-76.401778-10.194489-89.3952zM606.594844 590.961778l-18.352355 7.099733a101.159822 101.159822 0 0 0-53.668978 48.469333l-13.300622 26.066489-43.178667 3.936711 12.094578-12.105955a25.486222 25.486222 0 0 0 22.4256-7.122489c9.978311-10.012444 9.978311-26.282667 0-36.283733a25.406578 25.406578 0 0 0-18.113422-7.509334c-6.838044 0-13.266489 2.6624-18.102045 7.509334a25.656889 25.656889 0 0 0-7.111111 22.482489l-12.094578 12.105955 3.925334-43.269689 26.020978-13.312a101.228089 101.228089 0 0 0 48.366933-53.794133l7.088355-18.386489 64 64.113778z m319.010134-321.035378a233.8816 233.8816 0 0 1-9.443556 25.6l-78.677333-78.836622c40.368356-17.544533 71.964444-20.115911 85.356089-6.701511 10.274133 10.308267 11.264 31.596089 2.7648 59.938133z" fill="" p-id="14017"></path><path d="M171.053511 395.207111a14.791111 14.791111 0 0 0 9.762133-18.500267l-57.287111-186.288355h467.467378l15.439645 50.232889a14.756978 14.756978 0 0 0 18.466133 9.784889c7.805156-2.412089 12.174222-10.695111 9.773511-18.500267l-18.670933-60.677689a14.768356 14.768356 0 0 0-14.108445-10.4448H103.503644a14.791111 14.791111 0 0 0-14.119822 19.160178l63.1808 205.448533a14.791111 14.791111 0 0 0 18.488889 9.784889zM625.288533 865.439289H331.127467L195.413333 424.129422a14.756978 14.756978 0 0 0-18.466133-9.784889 14.791111 14.791111 0 0 0-9.773511 18.500267l138.922667 451.754667c1.900089 6.212267 7.634489 10.4448 14.119822 10.4448h305.072355a14.791111 14.791111 0 0 0 0-29.604978zM745.221689 591.382756c-2.400711-7.816533-10.672356-12.196978-18.466133-9.784889s-12.174222 10.695111-9.773512 18.511644l81.6128 265.341156H674.542933c-8.157867 0-14.768356 6.621867-14.768355 14.802489s6.610489 14.802489 14.768355 14.802488h144.065423a14.768356 14.768356 0 0 0 14.108444-19.1488l-87.495111-284.524088z" fill="" p-id="14018"></path><path d="M250.026667 288.119467a14.791111 14.791111 0 0 0-14.768356-14.802489h-17.544533a14.791111 14.791111 0 0 0 0 29.604978h17.544533a14.791111 14.791111 0 0 0 14.768356-14.802489zM571.710578 288.119467a14.791111 14.791111 0 0 0-14.779734-14.802489H284.501333a14.791111 14.791111 0 0 0 0 29.604978h272.429511a14.791111 14.791111 0 0 0 14.779734-14.802489zM239.069867 372.451556h96.642844a14.791111 14.791111 0 0 0 14.768356-14.802489 14.791111 14.791111 0 0 0-14.768356-14.802489h-96.642844a14.791111 14.791111 0 0 0 0 29.604978zM491.337956 372.451556a14.791111 14.791111 0 0 0 14.768355-14.802489 14.791111 14.791111 0 0 0-14.768355-14.802489h-106.382223a14.791111 14.791111 0 1 0 0 29.604978h106.382223zM529.760711 427.167289a14.791111 14.791111 0 0 0-14.779733-14.802489h-254.520889a14.791111 14.791111 0 0 0-14.768356 14.802489 14.791111 14.791111 0 0 0 14.768356 14.802489h254.509511a14.791111 14.791111 0 0 0 14.791111-14.802489zM403.683556 496.708267a14.791111 14.791111 0 0 0-14.779734-14.802489h-107.064889a14.791111 14.791111 0 0 0 0 29.604978h107.064889a14.791111 14.791111 0 0 0 14.779734-14.802489zM339.683556 731.431822l26.589866 23.677156a14.756978 14.756978 0 0 0 20.047645-0.375467l25.6-24.6784a14.813867 14.813867 0 0 0 0.4096-20.923733 14.7456 14.7456 0 0 0-20.8896-0.420978l-15.758223 15.189333-16.384-14.586311a14.7456 14.7456 0 0 0-20.855466 1.217422 14.836622 14.836622 0 0 0 1.240178 20.900978z" fill="" p-id="14019"></path></svg></a><a class="nav-item" title="跳转博客" target="_blank" rel="noopener" href="http://qiulab.work" style="color:#FFFF00"><svg t="1730798514758" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5442" width="200" height="200"><path d="M645.302 446.52c0.002 109.608-89.17 198.782-198.78 198.78h-67.824v81.096h67.824c154.324 0 279.876-125.552 279.876-279.876l0.002-216.744c-0.002-53.096 20.676-103.016 58.22-140.56 15.834-15.834 15.834-41.508 0-57.342-15.834-15.834-41.508-15.834-57.342 0-52.862 52.862-81.974 123.144-81.976 197.902V446.52zM297.602 645.3h-67.826c-74.758 0.002-145.04 29.114-197.9 81.974-15.834 15.834-15.834 41.508 0 57.342 15.834 15.834 41.508 15.834 57.342 0 37.544-37.544 87.464-58.222 140.558-58.22h67.826V645.3z" fill="#FE90C5" p-id="5443"></path><path d="M378.696 577.476c-0.002-109.608 89.17-198.782 198.78-198.78h67.824V297.6h-67.824c-154.324 0-279.876 125.552-279.876 279.876v216.746c0.002 53.096-20.676 103.016-58.22 140.558-15.834 15.834-15.834 41.508 0 57.342 15.834 15.834 41.508 15.834 57.342 0 52.86-52.86 81.972-123.142 81.974-197.9V577.476z" fill="#DAC7FF" p-id="5444"></path><path d="M992.122 239.38c-15.834-15.834-41.508-15.834-57.342 0-37.544 37.544-87.464 58.22-140.558 58.22h-67.826v81.096h67.826c74.758-0.002 145.04-29.114 197.9-81.974 15.834-15.834 15.834-41.506 0-57.342z" fill="#FE90C5" p-id="5445"></path><path d="M630.126 630.248l-0.158 0.156c-7.8 7.8-7.756 20.392 0.032 28.208a19.894 19.894 0 0 0 14.14 5.854c5.128 0 10.26-1.95 14.174-5.836l0.158-0.156c7.8-7.8 7.756-20.392-0.032-28.208-7.788-7.816-20.488-7.79-28.314-0.018z" p-id="5446"></path><path d="M1006.264 225.238c-18.958-18.956-47.458-22.672-70.176-11.184l-126.126-126.126a60.25 60.25 0 0 0 6.532-27.382c0-16.172-6.298-31.376-17.734-42.814-23.606-23.606-62.018-23.602-85.626 0-56.638 56.64-87.832 131.946-87.834 212.044v47.826h-47.824c-165.352 0-299.876 134.524-299.876 299.876v47.822h-47.826c-80.1 0.002-155.406 31.196-212.042 87.832C6.298 724.568 0 739.774 0 755.946s6.298 31.376 17.734 42.814c11.804 11.802 27.308 17.706 42.812 17.706s31.01-5.902 42.814-17.706a178.8 178.8 0 0 1 51.774-36.102l106.206 106.204a177.666 177.666 0 0 1-22.116 35.998l-30.794-30.794c-7.812-7.806-20.474-7.808-28.284 0-7.81 7.81-7.812 20.474 0 28.286l33.852 33.852c-11.418 22.7-7.682 51.134 11.244 70.062 11.804 11.802 27.308 17.706 42.812 17.706s31.01-5.902 42.814-17.706c56.636-56.638 87.83-131.944 87.832-212.044v-47.824h47.824c49.37 0 98.354-12.314 141.656-35.614 9.726-5.234 13.37-17.364 8.136-27.09-5.232-9.726-17.358-13.366-27.088-8.136-37.496 20.176-79.926 30.84-122.704 30.84H398.7V665.3H446.528c58.35 0 113.27-22.782 154.632-64.142 41.364-41.366 64.144-96.284 64.144-154.636V229.776c0.002-69.414 27.034-134.676 76.118-183.76 8.012-8.01 21.046-8.014 29.058 0 3.88 3.88 6.018 9.042 6.018 14.53s-2.136 10.646-6.018 14.528c-41.324 41.326-64.08 96.268-64.078 154.704l-0.002 216.744c0 43.952-11.224 87.406-32.458 125.668-5.36 9.658-1.876 21.832 7.782 27.194 9.662 5.358 21.834 1.876 27.192-7.784 24.522-44.186 37.482-94.354 37.482-145.078V398.7h47.826c80.1-0.002 155.406-31.196 212.042-87.832 11.436-11.436 17.734-26.64 17.734-42.812-0.002-16.178-6.3-31.382-17.736-42.818zM622.61 477.312l-75.924-75.926a180.006 180.006 0 0 1 30.79-2.69h47.824v47.824a179.81 179.81 0 0 1-2.69 30.792zM75.076 770.474c-8.012 8.01-21.046 8.014-29.058 0-3.88-3.88-6.018-9.042-6.018-14.53s2.136-10.646 6.018-14.528c49.082-49.084 114.342-76.116 183.758-76.118h47.826V706.392h-47.824c-58.442 0.004-113.382 22.762-154.702 64.082z m123.174-21.272a180.814 180.814 0 0 1 31.528-2.806h47.824v47.824c0 10.688-0.982 21.22-2.806 31.528l-76.546-76.546z m160.448 45.018c-0.002 69.416-27.034 134.678-76.118 183.76-8.012 8.01-21.046 8.008-29.056 0.002-8.01-8.014-8.01-21.048 0-29.058 41.324-41.324 64.08-96.266 64.078-154.704l0.002-216.742c0-143.296 116.58-259.876 259.876-259.876h47.824v41.096H577.476c-58.35 0-113.27 22.782-154.632 64.142-41.364 41.366-64.144 96.284-64.144 154.636V794.22h-0.002z m165.024-186.428l-107.516-107.516a178.14 178.14 0 0 1 22.602-35.512l120.426 120.428a178.336 178.336 0 0 1-35.512 22.6z m-77.2 17.508h-47.824v-47.824c0-11.8 1.148-23.428 3.378-34.76l79.206 79.206a179.93 179.93 0 0 1-34.76 3.378z m140.712-68.68l-119.856-119.858a177.916 177.916 0 0 1 36.086-22.026l105.796 105.798a177.628 177.628 0 0 1-22.026 36.086z m159.164-326.844c0-10.636 0.974-21.116 2.78-31.378l76.424 76.422a180.72 180.72 0 0 1-31.38 2.78l-47.824 0.002v-47.826z m122.344 31.616l-106.138-106.138a177.596 177.596 0 0 1 22.094-36.02l120.064 120.064a177.576 177.576 0 0 1-36.02 22.094z m109.238 21.188c-49.082 49.084-114.342 76.116-183.758 76.118h-47.826V317.602l47.824-0.002h0.008c58.434 0 113.374-22.756 154.692-64.076 8.014-8.012 21.048-8.012 29.058 0a20.414 20.414 0 0 1 6.018 14.53 20.396 20.396 0 0 1-6.016 14.526z" p-id="5447"></path><path d="M144.04 817.956c-5.26 0-10.42 2.14-14.14 5.862-3.72 3.718-5.86 8.878-5.86 14.138s2.14 10.42 5.86 14.14c3.72 3.72 8.88 5.86 14.14 5.86s10.42-2.138 14.14-5.86 5.86-8.88 5.86-14.14-2.14-10.42-5.86-14.138a20.16 20.16 0 0 0-14.14-5.862z" p-id="5448"></path></svg></a><a class="nav-item active" title="wiki" href="/wiki/" style="color:#3DC550"><svg t="1730798715713" class="icon" viewBox="0 0 1160 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10438" width="200" height="200"><path d="M1130.139115 501.254178l-2.082246-3.51379 2.082246-3.513791a166.059133 166.059133 0 0 0 26.028078-88.885884c0-60.385139-32.535097-116.085225-89.276305-152.654673l-3.643931-2.342527v-4.294633a128.838983 128.838983 0 0 0 1.301404-17.178531c0-86.673497-95.913465-157.469868-213.820655-157.600008-8.328985 0-17.048391 0-26.028077 1.301404h-3.513791l-1.301404-2.472667A213.430234 213.430234 0 0 0 655.777407 0.08355a221.238657 221.238657 0 0 0-144.065408 49.973909l-3.253509 2.863088-3.904212-1.691825a237.636346 237.636346 0 0 0-33.8365-12.103056 243.883084 243.883084 0 0 0-62.467386-8.328985c-83.289847 0-151.353269 43.987451-169.182502 109.317925a132.873335 132.873335 0 0 0-3.513791 17.959373l-0.780842 5.986458h-5.986458C145.757233 164.711139 78.084232 208.308168 60.124859 273.378362a135.085721 135.085721 0 0 0 7.548142 89.927007l2.212386 4.945334-4.815194 3.38365a146.017514 146.017514 0 0 0-65.070193 117.126348c0 86.803638 88.365322 157.469868 196.902405 157.469868a235.033538 235.033538 0 0 0 104.112309-23.55541l6.376879-3.12337 2.863088 6.376879c43.336749 91.09827 145.887373 150.051866 261.191756 150.051866a318.843947 318.843947 0 0 0 125.975894-25.247235l4.164492-1.691825 3.25351 2.993229a268.739898 268.739898 0 0 0 26.028077 21.212883l3.123369 2.342527v3.774071a345.132305 345.132305 0 0 0 11.322214 109.057644c21.212883 83.680268 59.083735 135.476142 82.118584 135.476142a13.014039 13.014039 0 0 0 3.253509 0c22.774568-5.596037 32.925518-72.227914 11.192074-158.901412-3.123369-13.014039-6.89744-24.466393-10.931793-36.048887l-3.904211-11.322214 11.842775 2.472668a303.877802 303.877802 0 0 0 60.515279 5.986458c143.935267 0 261.061615-99.687536 261.061616-222.27978a194.169457 194.169457 0 0 0-30.322711-102.550625z m-654.476003 61.296122l-6.246738-2.863088a153.435516 153.435516 0 0 1-86.673498-102.420484 186.751454 186.751454 0 0 1-47.631381 22.644427 288.651377 288.651377 0 0 1 9.109827 81.988443v6.7673l-34.487202-0.780842v-6.89744c3.123369-133.393896-79.645916-168.27152-83.289848-169.182503l-6.246738-2.472667 13.014038-31.754254 6.376879 2.472667a169.182502 169.182502 0 0 1 84.330971 87.974901c26.028077-7.808423 73.659459-29.281587 80.296618-80.556899l0.910983-6.7673 34.226921 4.294633-0.780842 6.7673a114.002978 114.002978 0 0 1-26.028077 58.953595 120.509998 120.509998 0 0 0 71.316932 98.386132l6.246738 2.863088z m35.007764-327.433212c-43.85731 16.78811-89.536586 33.8365-135.996704 33.8365a226.444272 226.444272 0 0 1-48.282083-5.726177c-9.370108 29.021306-31.363833 55.960366-65.070193 81.207602l-5.465896 3.774071L234.252696 320.749462l5.465896-4.164492c34.487202-25.247235 53.487699-52.056155 56.480927-78.084232a68.453843 68.453843 0 0 0-13.014038-48.151943l-4.424773-5.075475 26.028077-22.123866 4.554913 4.945335a100.858799 100.858799 0 0 1 21.863585 60.51528 200.546335 200.546335 0 0 0 43.206609 4.554913c41.124362 0 104.112309-11.582494 171.264748-67.022299l5.205616-4.294633 22.254006 26.028078-5.205616 4.424773c-5.986458 4.815194-11.972916 9.630389-18.219654 14.055162 22.254006 10.281091 46.980679 32.274816 58.693314 78.084231l1.691825 6.63716-33.446079 8.328985-1.691825-4.685054c-14.445583-57.522051-52.836997-59.994718-64.289351-59.994718zM961.737455 465.205291h-6.89744c-7.287862 0-14.445583-0.650702-21.473164-0.650702-58.302893 0-105.283573 16.007268-139.250213 47.501241-61.946824 57.39191-62.987947 150.442287-62.987947 151.35327v8.589265h-42.295626v-10.801652c0-4.424773 4.685054-106.845257 78.084232-174.648399a46.720399 46.720399 0 0 0 4.424773-2.212386 211.347988 211.347988 0 0 1-35.007764-100.208098 130.140386 130.140386 0 0 0-68.844264-21.473163c-36.048887 0-68.453843 17.959373-96.824448 53.227418l-4.164492 5.335756-27.0692-21.212883 4.294632-5.335756c35.137904-43.85731 76.522547-65.981176 123.112806-65.981176a167.360537 167.360537 0 0 1 70.145668 16.397688 267.568634 267.568634 0 0 1 21.343024-85.502233 174.388118 174.388118 0 0 1-66.892159-98.906694l-1.301404-6.7673 34.096781-6.246739 1.301404 6.63716c0.910983 4.424773 22.644427 107.235678 156.168464 107.235678a279.151129 279.151129 0 0 0 32.404956-1.171263l6.7673-0.650702 3.123369 33.446079-6.7673 0.650702a323.919422 323.919422 0 0 1-35.268044 1.952106 225.923711 225.923711 0 0 1-94.481921-18.870356c-13.014039 30.713131-38.391414 109.968627 13.014039 186.751454 41.775064-26.028077 94.481921-37.09001 156.168463-33.055658h6.767301z" fill="#1296db" p-id="10439"></path></svg></a></nav>
+</div>
+<div class="widgets">
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">动物模型</span></div><div class="widget-body fs14"><a class="link" href="/wiki/tfus-tinnitus/C57BL6J%E5%B0%8F%E9%BC%A0%E8%80%B3%E9%B8%A3%E9%80%A0%E6%A8%A1Protocol#start"><span class="toc-text">C57BL/6J小鼠耳鸣造模与GPIAS、PPI、ABR检测详细实验Protocol</span></a></div><div class="widget-header dis-select"><span class="name">动物实验技术</span></div><div class="widget-body fs14"><a class="link" href="/wiki/tfus-tinnitus/%E5%B0%8F%E9%BC%A0%E8%84%91%E5%8C%BA%E5%AE%9A%E4%BD%8D%E4%B8%8E%E7%AB%8B%E4%BD%93%E5%AE%9A%E4%BD%8D%E6%B3%A8%E5%B0%84"><span class="toc-text">小鼠脑区定位与立体定位注射</span></a><a class="link" href="/wiki/tfus-tinnitus/%E5%B0%8F%E9%BC%A0%E5%9C%A8%E4%BD%93%E7%94%B5%E7%94%9F%E7%90%86%E6%93%8D%E4%BD%9C"><span class="toc-text">小鼠在体电生理操作</span></a><a class="link" href="/wiki/tfus-tinnitus/%E5%85%89%E9%81%97%E4%BC%A0%E4%B8%8E%E5%8C%96%E5%AD%A6%E9%81%97%E4%BC%A0%E5%AD%A6%E6%93%8D%E4%BD%9C"><span class="toc-text">光遗传与化学遗传学操作</span></a></div><div class="widget-header dis-select"><span class="name">神经影像</span></div><div class="widget-body fs14"><a class="link active" href="/wiki/tfus-tinnitus/rs-fMRI%E9%A2%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-text">rs-fMRI预处理流程</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/tfus-tinnitus/ROI%E6%8C%91%E9%80%89%E5%8E%9F%E5%88%99"><span class="toc-text">ROI挑选原则</span></a><a class="link" href="/wiki/tfus-tinnitus/%E9%9D%99%E6%81%AF%E6%80%81%E5%8A%9F%E8%83%BD%E8%BF%9E%E6%8E%A5%E5%88%86%E6%9E%90"><span class="toc-text">静息态功能连接分析</span></a><a class="link" href="/wiki/tfus-tinnitus/MEG%E9%A2%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%BA%90%E5%AE%9A%E4%BD%8D"><span class="toc-text">MEG预处理与源定位</span></a><a class="link" href="/wiki/tfus-tinnitus/MEG%E6%97%B6%E9%A2%91%E5%88%86%E6%9E%90%E6%8C%87%E5%8D%97"><span class="toc-text">MEG时频分析指南</span></a></div></widget>
+
+
+
+
+</div>
+<footer class="footer dis-select"><div class="social-wrap"><a class="social" href="http://139.199.186.42:3838/" target="_blank" rel="external nofollow noopener noreferrer"><svg t="1730799172810" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15144" width="200" height="200"><path d="M292.6 691.9c-98.3 0-173.6-13-207.4-38.2-13.1-9.7-20.6-21.4-22.4-34.6-2.8-20.3 8.4-40.8 33.2-60.9 2.9-2.3 46.1-26.3 53.1-27.9 9.8-2.1 19.3 3.9 21.5 13.6 2.1 9.1-3.1 18.1-11.7 21-5.9 2.6-37.1 19.4-41.3 22.1-12.4 10.1-20 20.6-19.1 27.2 0.6 4.1 4.8 8.1 8.3 10.7 42 31.3 199.1 45.3 418 11.6C797.3 594.4 932.1 516 928 485.7c-1.2-8.7-18.9-27.8-63.7-27.8-10 0-18-8.1-18-18s8.1-18 18-18c62.7 0 95.5 30.6 99.4 58.9 12.3 89.4-252.4 163.4-433.3 191.3-86.6 13.3-168.1 19.8-237.8 19.8zM260.4 472.4c-0.6 0-1.1-0.1-1.7-0.2-4.9-0.9-8.1-5.6-7.2-10.5 3.2-16.9 8.1-33.6 14.6-49.6 1.9-4.6 7.1-6.8 11.7-5 4.6 1.9 6.8 7.1 5 11.7-6 14.9-10.6 30.5-13.6 46.2-0.8 4.4-4.6 7.4-8.8 7.4z m52.5-113.1c-2 0-4-0.7-5.7-2-3.9-3.1-4.5-8.8-1.3-12.7 39.6-49 95.3-82.5 156.8-94.3 4.9-0.9 9.6 2.3 10.5 7.2 0.9 4.9-2.3 9.6-7.1 10.5-57.4 11-109.3 42.2-146.2 87.9-1.8 2.2-4.4 3.4-7 3.4z" fill="#FF7878" p-id="15145"></path><path d="M513.1 892.2c-209.7 0-380.4-170.6-380.4-380.4 0-10.2 0.4-20.5 1.2-30.5 1.1-13.7 2.9-27.5 5.5-41.1C173.5 261.3 330.6 131.4 513 131.4c139.9 0 268.1 76.5 334.8 199.6 4.7 8.7 1.5 19.7-7.3 24.4-8.7 4.7-19.7 1.5-24.4-7.3C755.8 236.6 639.6 167.4 513 167.4 348 167.5 205.7 285 174.9 447c-2.3 12.2-4 24.7-5 37.2-0.7 9.1-1.1 18.4-1.1 27.7 0 189.9 154.5 344.3 344.3 344.3s344.3-154.5 344.3-344.3c0-22.9-2.3-45.8-6.7-68.1-2-9.7 4.4-19.2 14.1-21.2S884 427 886 436.7c4.9 24.6 7.4 49.9 7.4 75.2 0.1 209.7-170.5 380.3-380.3 380.3z" fill="#FF7878" p-id="15146"></path></svg></a><a class="social" onclick="switchTheme()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M582.4 326.4c-140.8 0-256 115.2-256 256s115.2 256 256 256 256-115.2 256-256-115.2-256-256-256z m0 448c-70.4 0-131.2-36.8-164.8-92.8 12.8 3.2 27.2 4.8 40 4.8 121.6 0 219.2-99.2 219.2-219.2 0-17.6-1.6-35.2-6.4-52.8 60.8 32 102.4 96 102.4 169.6 1.6 104-84.8 190.4-190.4 190.4zM582.4 262.4c17.6 0 32-14.4 32-32v-128c0-17.6-14.4-32-32-32s-32 14.4-32 32v128c0 17.6 14.4 32 32 32zM262.4 582.4c0-17.6-14.4-32-32-32h-128c-17.6 0-32 14.4-32 32s14.4 32 32 32h128c17.6 0 32-14.4 32-32zM310.4 356.8c6.4 6.4 14.4 9.6 22.4 9.6 8 0 16-3.2 22.4-9.6 12.8-12.8 12.8-32 0-44.8l-91.2-91.2c-12.8-12.8-32-12.8-44.8 0-12.8 12.8-12.8 32 0 44.8l91.2 91.2zM944 220.8c-12.8-12.8-32-12.8-44.8 0l-91.2 91.2c-12.8 12.8-12.8 32 0 44.8 6.4 6.4 14.4 9.6 22.4 9.6 8 0 16-3.2 22.4-9.6l91.2-91.2c12.8-12.8 12.8-33.6 0-44.8zM310.4 808l-91.2 91.2c-12.8 12.8-12.8 32 0 44.8 6.4 6.4 14.4 9.6 22.4 9.6 8 0 16-3.2 22.4-9.6l91.2-91.2c12.8-12.8 12.8-32 0-44.8-11.2-11.2-32-11.2-44.8 0z"></path></svg></a><a class="social" href="/about/#comments" rel="noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/942ebbf1a4b91.svg"/></a></div></footer>
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top"><img class="bg lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/assets/posts/banner.png">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/tfus-tinnitus/C57BL6J%E5%B0%8F%E9%BC%A0%E8%80%B3%E9%B8%A3%E9%80%A0%E6%A8%A1Protocol">tfus-tinnitus</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2026-10-26T01:29:18.551Z">2026-10-26</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>rs-fMRI预处理流程</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h2 id="采集"><a href="#采集" class="headerlink" title="采集"></a>采集</h2><p>3.0 T 以上、32 通道头线圈；3D T1 用 0.8 mm 各向同性；rs-fMRI 用 TR ≈ 1000 ms、TE ≈ 30 ms、2 mm 各向同性、全脑覆盖，多次 8 min，记录反向相位编码参考与生理噪声。按 BIDS 归档。</p>
+<h2 id="预处理流水线"><a href="#预处理流水线" class="headerlink" title="预处理流水线"></a>预处理流水线</h2><ol>
+<li>去除非稳态体积（dummy scans）。</li>
+<li>切片时序校正（适用时）。</li>
+<li>头动校正（realignment），估计 6 项头动参数。</li>
+<li>畸变校正：用反向相位编码图或 fieldmap 校正 EPI 畸变。</li>
+<li>结构像与功能像配准，变换到标准空间（MNI）。</li>
+<li>去噪回归：24 项头动参数与白质、脑脊液成分；全局信号回归作为敏感性分析。</li>
+<li>带通滤波 0.01～0.1 Hz。</li>
+<li>头动擦除：FD &gt; 0.5 mm 的体积及前后各 2 帧作为污染帧。</li>
+</ol>
+<h2 id="质控"><a href="#质控" class="headerlink" title="质控"></a>质控</h2><ul>
+<li>每段有效数据 &lt; 6 min 不进入主要分析。</li>
+<li>记录 FD 均值、保留体积数、配准质量，组间结果解盲前完成质控。</li>
+<li>深部小核团在未平滑数据上提取时间序列，皮层分析用 4 mm 平滑核。</li>
+</ul>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://lab.qiulab.work/wiki/tfus-tinnitus/rs-fMRI%E9%A2%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://lab.qiulab.work/wiki/tfus-tinnitus/rs-fMRI%E9%A2%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B&title=rs-fMRI预处理流程 - ShiLab_Wiki&summary=静息态功能磁共振的采集规范与预处理流水线"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=rs-fMRI预处理流程 - ShiLab_Wiki&amp;body=https://lab.qiulab.work/wiki/tfus-tinnitus/rs-fMRI%E9%A2%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://lab.qiulab.work/wiki/tfus-tinnitus/rs-fMRI%E9%A2%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/tfus-tinnitus/%E5%85%89%E9%81%97%E4%BC%A0%E4%B8%8E%E5%8C%96%E5%AD%A6%E9%81%97%E4%BC%A0%E5%AD%A6%E6%93%8D%E4%BD%9C">光遗传与化学遗传学操作</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/tfus-tinnitus/ROI%E6%8C%91%E9%80%89%E5%8E%9F%E5%88%99">ROI挑选原则</a></div></section></div>
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>评论</p>
+
+    </section>
+    <section class='body cmt-body twikoo'>
+      
+
+<div id="twikoo_container"><svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg></div>
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs15">分类查找</span><a href="/">最新</a><a href="/categories/">分类</a><a href="/tool/">工具</a><a target="_blank" rel="noopener" href="http://www.szflab.site/">Shilab主页</a></div><div class="sitemap-group"><span class="fs15">wiki</span><a href="/wiki/knowledge">知识碎片</a><a href="/wiki/guideline">实验指南</a><a href="/wiki">总览</a></div><div class="sitemap-group"><span class="fs15">工具（尚未开发）</span><a href="/">科研网站链接</a><a href="/">本实验室工具</a></div><div class="sitemap-group"><span class="fs15">更多</span><a href="/about/">关于本站</a><a href="/about/#comments">评论</a><a target="_blank" rel="noopener" href="https://github.com/li2zhen/ShiLab_Wiki">仓库源码</a></div></div><div class="text"><center>
+</br>
+</br>
+@2024 <a target="_blank" rel="noopener" href="https://github.com/li2zhen/ShiLab_Wiki"> <b>Li_Zhen</b> </a>使用<a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar"> <b>Stellar</b> </a>主题创建
+</br>
+<script type="text/javascript">
+function show_runtime() {
+    window.setTimeout("show_runtime()", 1000);
+    X = new Date("8/21/2025 17:00:00");
+    Y = new Date();
+    T = (Y.getTime() - X.getTime());
+    M = 24 * 60 * 60 * 1000;
+    a = T / M;
+    A = Math.floor(a);
+    b = (a - A) * 24;
+    B = Math.floor(b);
+    c = (b - B) * 60;
+    C = Math.floor((b - B) * 60);
+    D = Math.floor((c - C) * 60);
+    runtime_span.innerHTML = "本Wiki已运行 " + A + "天|" + B + "小时|" + C + "分|" + D + "秒"
+}
+show_runtime();
+</script>
+<span id="runtime_span"></span>
+</center>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%87%E9%9B%86"><span class="toc-text">采集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%84%E5%A4%84%E7%90%86%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="toc-text">预处理流水线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%A8%E6%8E%A7"><span class="toc-text">质控</span></a></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"codeblock":true,"skip_serch":[],"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.getElementById('twikoo_container');
+  util.viewportLazyload(el, load_twikoo, false);
+
+  function load_twikoo() {
+    if (!el) return;
+    utils.js('https://gcore.jsdelivr.net/npm/twikoo@1.6.8/dist/twikoo.all.min.js', {defer: true}).then(function () {
+      const path = el.getAttribute('comment_id') ?? decodeURI(window.location.pathname);
+      twikoo.init(Object.assign({"js":"https://gcore.jsdelivr.net/npm/twikoo@1.6.8/dist/twikoo.all.min.js","envId":"https://twikoo-comment-setup.vercel.app/"}, {
+        el: '#twikoo_container',
+        path: path,
+      }));
+    });
+  }
+</script>
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
